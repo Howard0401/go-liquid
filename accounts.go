@@ -79,6 +79,35 @@ type AccountBalance struct {
 	Balance  string `json:"balance"`
 }
 
+type AccountBalanceV2 struct {
+	CryptoAccounts []struct {
+		ID                       int         `json:"id,omitempty"`
+		Currency                 string      `json:"currency,omitempty"`
+		Balance                  string      `json:"balance,omitempty"`
+		ReservedBalance          string      `json:"reserved_balance,omitempty"`
+		PusherChannel            string      `json:"pusher_channel,omitempty"`
+		LowestOfferInterestRate  interface{} `json:"lowest_offer_interest_rate,omitempty"`
+		HighestOfferInterestRate interface{} `json:"highest_offer_interest_rate,omitempty"`
+		Address                  interface{} `json:"address,omitempty"`
+		CurrencySymbol           string      `json:"currency_symbol,omitempty"`
+		MinimumWithdraw          interface{} `json:"minimum_withdraw,omitempty"`
+		CurrencyType             string      `json:"currency_type,omitempty"`
+	} `json:"crypto_accounts,omitempty"`
+	FiatAccounts []struct {
+		ID                       int         `json:"id,omitempty"`
+		Currency                 string      `json:"currency,omitempty"`
+		Balance                  string      `json:"balance,omitempty"`
+		ReservedBalance          string      `json:"reserved_balance,omitempty"`
+		PusherChannel            string      `json:"pusher_channel,omitempty"`
+		LowestOfferInterestRate  interface{} `json:"lowest_offer_interest_rate,omitempty"`
+		HighestOfferInterestRate interface{} `json:"highest_offer_interest_rate,omitempty"`
+		CurrencySymbol           string      `json:"currency_symbol,omitempty"`
+		SendToBtcAddress         interface{} `json:"send_to_btc_address,omitempty"`
+		ExchangeRate             string      `json:"exchange_rate,omitempty"`
+		CurrencyType             string      `json:"currency_type,omitempty"`
+	} `json:"fiat_accounts,omitempty"`
+}
+
 func (c *Client) GetAllAccountBalances() ([]AccountBalance, error) {
 	res, err := c.sendRequest("GET", "/accounts/balance", nil, nil)
 	if err != nil {
@@ -88,6 +117,20 @@ func (c *Client) GetAllAccountBalances() ([]AccountBalance, error) {
 	var balances []AccountBalance
 	if err := decode(res, &balances); err != nil {
 		return nil, err
+	}
+
+	return balances, nil
+}
+
+func (c *Client) GetAllAccountBalancesV2() (AccountBalanceV2, error) {
+	res, err := c.sendRequest("GET", "/accounts/balance", nil, nil)
+	if err != nil {
+		return AccountBalanceV2{}, err
+	}
+
+	var balances AccountBalanceV2
+	if err := decode(res, &balances); err != nil {
+		return balances, err
 	}
 
 	return balances, nil
