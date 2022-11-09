@@ -1,4 +1,4 @@
-module github.com/go-numb/go-liquid
+module github.com/Howard0401/go-liquid
 
 go 1.19
 
